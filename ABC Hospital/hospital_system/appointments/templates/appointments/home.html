@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Appointment System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://media.istockphoto.com/id/1312706413/photo/modern-hospital-building.jpg?s=612x612&w=0&k=20&c=oUILskmtaPiA711DP53DFhOUvE7pfdNeEK9CfyxlGio=') no-repeat center center fixed;
+            background-size: cover;
+            color: white; /* Ensures text is readable over the background */
+            height: 100vh; /* Full height */
+        }
+
+        header {
+            background-color: rgba(76, 175, 80, 0.8); /* Semi-transparent background for header */
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Button container centered vertically and horizontally */
+        .button-container {
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            gap: 20px; /* Space between buttons */
+            position: absolute;
+            top: 50%; /* Vertically center the buttons */
+            left: 50%;
+            transform: translate(-50%, -50%); /* Offset by half of its width/height */
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button:active {
+            background-color: #388e3c;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to the Hospital Appointment System</h1>
+</header>
+
+<!-- Centered button container -->
+<div class="button-container">
+    <!-- Button for creating appointment (User Portal) -->
+    <a href="{% url 'create_appointment' %}" class="button">Create Appointment</a>
+
+    <!-- Button for hospital portal to see appointments -->
+    <a href="{% url 'appointment_list' %}" class="button">Hospital Portal</a>
+</div>
+
+</body>
+</html>

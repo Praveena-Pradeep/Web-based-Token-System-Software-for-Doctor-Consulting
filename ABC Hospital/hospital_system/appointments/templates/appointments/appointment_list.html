@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments List</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: url('https://media.istockphoto.com/id/1312706413/photo/modern-hospital-building.jpg?s=612x612&w=0&k=20&c=oUILskmtaPiA711DP53DFhOUvE7pfdNeEK9CfyxlGio=') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 12px;
+            width: 70%;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input[type="text"]:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #45a049;
+        }
+
+        /* Grouping Option Styles */
+        .grouping-option {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .grouping-option a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        .grouping-option a:hover {
+            color: #45a049;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Table Responsive */
+        @media (max-width: 768px) {
+            .search-bar input[type="text"], .search-bar button {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Appointment List</h2>
+    
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <form method="GET" action="">
+                <input type="text" name="search" value="{{ search_query }}" placeholder="Search by name or mobile number">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    
+        <!-- Group by Doctor Option -->
+        <div class="grouping-option">
+            <a href="?group_by_doctor=true&search={{ search_query }}">Group by Doctor</a> |
+            <a href="?group_by_doctor=false&search={{ search_query }}">Show All</a>
+        </div>
+    
+        <!-- Appointments Table or Grouping by Doctor -->
+        {% if group_by_doctor %}
+            {% for doctor, appointments in appointments.items %}
+                <h3>Doctor: {{ doctor.name }}</h3>
+                <table>
+                    <tr>
+                        <th>Token</th>
+                        <th>Name</th>
+                        <th>Mobile Number</th>
+                        <th>Department</th>
+                    </tr>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.token_number }}</td>
+                            <td>{{ appointment.name }}</td>
+                            <td>{{ appointment.mobile_number }}</td>
+                            <td>{{ appointment.department.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        {% else %}
+            <table>
+                <tr>
+                    <th>Token</th>
+                    <th>Name</th>
+                    <th>Mobile Number</th>
+                    <th>Department</th>
+                    <th>Doctor</th>
+                </tr>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.token_number }}</td>
+                        <td>{{ appointment.name }}</td>
+                        <td>{{ appointment.mobile_number }}</td>
+                        <td>{{ appointment.department.name }}</td>
+                        <td>{{ appointment.doctor.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    
+        <!-- Pagination Inside the Table -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1&search={{ search_query }}&group_by_doctor={{ group_by_doctor }}" class="pagination-link">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&group_by_doctor={{ group_by_doctor }}" class="pagination-link">Previous</a>
+                {% endif %}
+            </span>
+        
+            <div class="current-page">
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+            </div>
+        
+            <span class="step-links">
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&group_by_doctor={{ group_by_doctor }}" class="pagination-link">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&group_by_doctor={{ group_by_doctor }}" class="pagination-link">Last</a>
+                {% endif %}
+            </span>
+        </div>
+        
+    
